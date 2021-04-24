@@ -155,8 +155,8 @@ view model =
                 _ ->
                     viewHome
     in
-    div [ style "display" "flex", style "background-image" "url(img/bg_img.jpg) ", style "height" "800px" ]
-        [ div [ style "width" "25%", style "float" "left" ]
+    div [ style "display" "flex", style "background-image" "url(img/bg_img.jpg) ", style "height" "100v", style "padding-bottom" "50px" ]
+        [ div [ style "width" "20%", style "float" "left", hidden True ]
             [ ul [ style "list-style-type" "none" ]
                 [ li [] [ label [ onClick (SelectPage 0) ] [ text "home" ] ]
                 , li [] [ label [ onClick (SelectPage 1) ] [ text "他の家族" ] ]
@@ -164,13 +164,11 @@ view model =
                 , li [] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
                 ]
             ]
-        , div [ style "width" "50%", style "margin" "0 auto" ]
-            [ div [ style "font-size" "50px", style "text-align" "center" ] [ text "🏠Virtual役場🏠" ]
+        , div [ style "width" "100%", style "margin" "0 auto" ]
+            [ div [ style "font-size" "50px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "30px" ] [ text "🏠Virtual役場🏠" ]
             , div [ style "height" "10px" ] [ hr [] [] ]
             , viewPage model
             ]
-        , div [ style "width" "25%", style "float" "right" ]
-            [ text model.account.name ]
         ]
 
 
@@ -180,7 +178,7 @@ view model =
 
 viewHome : Model -> Html Msg
 viewHome model =
-    div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd" ]
+    div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd", style "width" "172mm", style "height" "251mm", style "margin" "0 auto", style "padding" "40px" ]
         [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "婚姻届" ]
         , appSelect
         , br [] []
@@ -190,17 +188,19 @@ viewHome model =
 
 appSelect : Html Msg
 appSelect =
-    div []
-        [ text "出会った場所"
+    div [ style "margin-top" "25px", style "margin-bottom" "25px" ]
+        [ div [ style "font-size" "20px" ] [ text "出会った場所" ]
         , br [] []
-        , input [ type_ "radio", onClick (AppSelect 0) ] []
-        , text "Reality"
-        , input [ type_ "radio", onClick (AppSelect 1) ] []
-        , text "Mirative"
-        , input [ type_ "radio", onClick (AppSelect 2) ] []
-        , text "IRIUM"
-        , input [ type_ "radio", onClick (AppSelect 3) ] []
-        , text "Twitter"
+        , div [ style "margin-left" "20px" ]
+            [ input [ type_ "radio", onClick (AppSelect 0) ] []
+            , text "Reality"
+            , input [ type_ "radio", onClick (AppSelect 1) ] []
+            , text "Mirative"
+            , input [ type_ "radio", onClick (AppSelect 2) ] []
+            , text "IRIUM"
+            , input [ type_ "radio", onClick (AppSelect 3) ] []
+            , text "Twitter"
+            ]
         ]
 
 
@@ -223,7 +223,7 @@ marryForm model =
 husbund : Model -> Html Msg
 husbund model =
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-        [ div [ style "display" "flex" ]
+        [ div []
             [ label [ style "font-size" "20px" ] [ text "夫:" ]
             , textarea
                 [ Html.Attributes.value model.husband
@@ -237,13 +237,13 @@ husbund model =
                 []
             ]
         , br [] []
-        , div [ hidden (model.husbImg == Nothing) ]
+        , div []
             [ case model.husbImg of
                 Nothing ->
-                    div [ style "width" "90%" ] []
+                    div [ style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
 
                 Just content ->
-                    img [ src content, style "width" "90%" ] []
+                    img [ src content, style "width" "90%", style "height" "50vw" ] []
             ]
         , label [ onClick ImgReqHusb, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
         ]
@@ -252,7 +252,7 @@ husbund model =
 wife : Model -> Html Msg
 wife model =
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-        [ div [ style "display" "flex" ]
+        [ div []
             [ label [ style "font-size" "20px" ] [ text "嫁:" ]
             , textarea
                 [ Html.Attributes.value model.wife
@@ -266,13 +266,13 @@ wife model =
                 []
             ]
         , br [] []
-        , div [ hidden (model.husbImg == Nothing) ]
+        , div []
             [ case model.wifeImg of
                 Nothing ->
-                    text ""
+                    div [ style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
 
                 Just content ->
-                    img [ src content, style "width" "90%" ] []
+                    img [ src content, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
             ]
         , label [ onClick ImgReqWife, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
         ]
