@@ -39,7 +39,7 @@ type alias Human =
 
 
 initHuman =
-    { name = "名無しのVIP", sex = "", app = [], img = Nothing }
+    { name = "mibou", sex = "", app = [], img = Nothing }
 
 
 type alias Model =
@@ -47,8 +47,7 @@ type alias Model =
     , account : Human
     , husband : String
     , wife : String
-    , husbImg : Maybe String
-    , wifeImg : Maybe String
+    , imgs : List (Maybe String)
     , meetApp : Int
     , appSelect : Int
     }
@@ -56,7 +55,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 0 initHuman "danna" "yome" Nothing Nothing 0 0, Cmd.none )
+    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0, Cmd.none )
 
 
 
@@ -65,13 +64,11 @@ init _ =
 
 type Msg
     = SelectPage Int
-    | InputHusb String
-    | InputWife String
+    | InputName Int String
     | Submit
-    | ImgReqHusb
+    | ImgReq Int
     | ImgSelHusb File
     | ImgLoadHusb String
-    | ImgReqWife
     | ImgSelWife File
     | ImgLoadWife String
     | AppSelect Int
@@ -83,38 +80,60 @@ update msg model =
         SelectPage number ->
             ( { model | page = number }, Cmd.none )
 
-        InputHusb input ->
-            ( { model | husband = input }, Cmd.none )
+        InputName int input ->
+            if int == 0 then
+                ( { model | husband = input }, Cmd.none )
 
-        InputWife input ->
-            ( { model | wife = input }, Cmd.none )
+            else
+                ( { model | wife = input }, Cmd.none )
 
         Submit ->
             ( model, Cmd.none )
 
-        ImgReqHusb ->
+        ImgReq int ->
+            let
+                imgMsg =
+                    if int == 0 then
+                        ImgSelHusb
+
+                    else
+                        ImgSelWife
+            in
             ( model
-            , Select.file [ "image/jpeg", "image/png" ] ImgSelHusb
+            , Select.file [ "image/jpeg", "image/png" ] imgMsg
             )
 
         ImgSelHusb img ->
             ( model, Task.perform ImgLoadHusb <| File.toUrl img )
 
         ImgLoadHusb content ->
-            ( { model | husbImg = Just content }
-            , Cmd.none
-            )
+            let
+                img =
+                    case List.head (List.reverse model.imgs) of
+                        Just wife ->
+                            wife
 
-        ImgReqWife ->
-            ( model
-            , Select.file [ "image/jpeg", "image/png" ] ImgSelWife
+                        _ ->
+                            Nothing
+            in
+            ( { model | imgs = [ Just content, img ] }
+            , Cmd.none
             )
 
         ImgSelWife img ->
             ( model, Task.perform ImgLoadWife <| File.toUrl img )
 
         ImgLoadWife content ->
-            ( { model | wifeImg = Just content }
+            let
+                img =
+                    case List.head model.imgs of
+                        Just husb ->
+                            husb
+
+                        _ ->
+                            Nothing
+            in
+            ( { model | imgs = [ img, Just content ] }
             , Cmd.none
             )
 
@@ -214,8 +233,8 @@ marryForm : Model -> Html Msg
 marryForm model =
     Html.form [ onSubmit Submit, style "display" "flex", style "flex-direction" "column" ]
         [ div [ style "desplay" "flex" ]
-            [ husbund model
-            , wife model
+            [ personSelect model 0
+            , personSelect model 1
             ]
         , br [] []
         , div [ style "text-align" "center" ]
@@ -226,14 +245,39 @@ marryForm model =
         ]
 
 
-husbund : Model -> Html Msg
-husbund model =
+personSelect : Model -> Int -> Html Msg
+personSelect model int =
+    let
+        person =
+            if int == 0 then
+                model.husband
+
+            else
+                model.wife
+
+        personImg =
+            if int == 0 then
+                case List.head model.imgs of
+                    Just wife ->
+                        wife
+
+                    _ ->
+                        Nothing
+
+            else
+                case List.head (List.reverse model.imgs) of
+                    Just wife ->
+                        wife
+
+                    _ ->
+                        Nothing
+    in
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
         [ div []
-            [ label [ style "font-size" "20px" ] [ text "夫:" ]
+            [ label [ style "font-size" "20px" ] [ text "pername" ]
             , textarea
-                [ Html.Attributes.value model.husband
-                , onInput InputHusb
+                [ Html.Attributes.value person
+                , onInput (InputName int)
                 , style "font-size" "20px"
                 , style "height" "1em"
                 , style "resize" "none"
@@ -243,48 +287,77 @@ husbund model =
                 []
             ]
         , br [] []
-        , div []
-            [ case model.husbImg of
-                Nothing ->
-                    div [ style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
-
+        , div [ style "margin-bottom" "10px" ]
+            [ case personImg of
                 Just content ->
                     img [ src content, style "width" "90%", style "height" "50vw" ] []
-            ]
-        , label [ onClick ImgReqHusb, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
-        ]
 
-
-wife : Model -> Html Msg
-wife model =
-    div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-        [ div []
-            [ label [ style "font-size" "20px" ] [ text "嫁:" ]
-            , textarea
-                [ Html.Attributes.value model.wife
-                , onInput InputWife
-                , style "font-size" "20px"
-                , style "height" "1em"
-                , style "resize" "none"
-                , style "padding" "0px"
-                , style "background-color" "transparent"
-                ]
-                []
+                _ ->
+                    div [ onClick (ImgReq int), style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
             ]
-        , br [] []
-        , div []
-            [ case model.wifeImg of
-                Nothing ->
-                    div [ style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
-
-                Just content ->
-                    img [ src content, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
-            ]
-        , label [ onClick ImgReqWife, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
+        , label [ onClick (ImgReq int), style "border" "solid 1px #000000", style "margin-top" "10px" ] [ text "画像を選択" ]
         ]
 
 
 
+{-
+   husbund : Model -> Html Msg
+   husbund model =
+       div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
+           [ div []
+               [ label [ style "font-size" "20px" ] [ text "夫:" ]
+               , textarea
+                   [ Html.Attributes.value model.husband
+                   , onInput InputHusb
+                   , style "font-size" "20px"
+                   , style "height" "1em"
+                   , style "resize" "none"
+                   , style "padding" "0px"
+                   , style "background-color" "transparent"
+                   ]
+                   []
+               ]
+           , br [] []
+           , div [ style "margin-bottom" "10px" ]
+               [ case model.husbImg of
+                   Nothing ->
+                       div [ onClick ImgReqHusb, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
+
+                   Just content ->
+                       img [ src content, style "width" "90%", style "height" "50vw" ] []
+               ]
+           , label [ onClick ImgReqHusb, style "border" "solid 1px #000000", style "margin-top" "10px" ] [ text "画像を選択" ]
+           ]
+
+
+   wife : Model -> Html Msg
+   wife model =
+       div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
+           [ div []
+               [ label [ style "font-size" "20px" ] [ text "嫁:" ]
+               , textarea
+                   [ Html.Attributes.value model.wife
+                   , onInput InputWife
+                   , style "font-size" "20px"
+                   , style "height" "1em"
+                   , style "resize" "none"
+                   , style "padding" "0px"
+                   , style "background-color" "transparent"
+                   ]
+                   []
+               ]
+           , br [] []
+           , div [ style "margin-bottom" "10px" ]
+               [ case model.wifeImg of
+                   Nothing ->
+                       div [ onClick ImgReqWife, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
+
+                   Just content ->
+                       img [ src content, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
+               ]
+           , label [ onClick ImgReqWife, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
+           ]
+-}
 ---serch
 
 
