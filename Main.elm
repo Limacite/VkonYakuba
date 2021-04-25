@@ -191,17 +191,23 @@ appSelect =
     div [ style "margin-top" "25px", style "margin-bottom" "25px" ]
         [ div [ style "font-size" "20px" ] [ text "出会った場所" ]
         , br [] []
-        , div [ style "margin-left" "20px" ]
-            [ input [ type_ "radio", onClick (AppSelect 0) ] []
-            , text "Reality"
-            , input [ type_ "radio", onClick (AppSelect 1) ] []
-            , text "Mirative"
-            , input [ type_ "radio", onClick (AppSelect 2) ] []
-            , text "IRIUM"
-            , input [ type_ "radio", onClick (AppSelect 3) ] []
-            , text "Twitter"
-            ]
+        , div [] appList
         ]
+
+
+appList : List (Html Msg)
+appList =
+    List.concat
+        (List.indexedMap viewAppList [ "IRIAM", "Mirative", "Reality", "Twitter" ])
+
+
+viewAppList : Int -> String -> List (Html Msg)
+viewAppList num app =
+    [ label [ style "margin-left" "25px" ]
+        [ input [ type_ "radio", onClick (AppSelect num), name "appList" ] []
+        , text app
+        ]
+    ]
 
 
 marryForm : Model -> Html Msg
