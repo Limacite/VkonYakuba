@@ -202,8 +202,8 @@ view model =
 
 viewHome : Model -> Html Msg
 viewHome model =
-    div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd", style "width" "172mm", style "height" "251mm", style "margin" "0 auto", style "padding" "40px" ]
-        [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "婚姻届" ]
+    div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd", style "width" "172mm", style "height" "251mm", style "margin" "0 auto", style "padding" "60px", style "background-image" "url(img/bg_img_konin.png)", style "background-size" "100% 100%" ]
+        [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "-婚姻届-" ]
         , appSelect
         , br [] []
         , marryForm model
@@ -250,6 +250,23 @@ marryForm model =
         ]
 
 
+howCall : Html Msg
+howCall =
+    select
+        [ style "font-size" "20px"
+        , style "height" "1.3em"
+        , style "resize" "none"
+        , style "padding" "0px"
+        , style "margin" "0px"
+        , style "background-color" "transparent"
+        , style "vertical-align" "middle"
+        ]
+        [ option [ value "夫" ] [ text "夫" ]
+        , option [ value "嫁" ] [ text "嫁" ]
+        , option [ value "他人" ] [ text "他人" ]
+        ]
+
+
 personSelect : Model -> Int -> Html Msg
 personSelect model int =
     let
@@ -279,90 +296,46 @@ personSelect model int =
     in
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
         [ div []
-            [ label [ style "font-size" "20px" ] [ text "pername" ]
+            [ howCall
             , textarea
                 [ Html.Attributes.value person
                 , onInput (InputName int)
                 , style "font-size" "20px"
-                , style "height" "1em"
+                , style "height" "1.2em"
                 , style "resize" "none"
                 , style "padding" "0px"
+                , style "margin" "0px"
                 , style "background-color" "transparent"
+                , style "vertical-align" "middle"
                 ]
                 []
             ]
         , br [] []
-        , div [ style "margin-bottom" "10px" ]
+        , div
+            [ style "margin-bottom" "10px"
+            , style "padding" "0"
+            , style "margin" "0"
+            ]
             [ case personImg of
                 Just content ->
                     img [ src content, style "width" "90%", style "height" "50vw" ] []
 
                 _ ->
-                    div [ onClick (ImgReq int), style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
+                    div
+                        [ onClick (ImgReq int)
+                        , style "width" "90%"
+                        , style "height" "50vw"
+                        , style "background-color" "gray"
+                        , style "padding" "0"
+                        , style "margin" "0"
+                        ]
+                        []
             ]
         , label [ onClick (ImgReq int), style "border" "solid 1px #000000", style "margin-top" "10px" ] [ text "画像を選択" ]
         ]
 
 
 
-{-
-   husbund : Model -> Html Msg
-   husbund model =
-       div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-           [ div []
-               [ label [ style "font-size" "20px" ] [ text "夫:" ]
-               , textarea
-                   [ Html.Attributes.value model.husband
-                   , onInput InputHusb
-                   , style "font-size" "20px"
-                   , style "height" "1em"
-                   , style "resize" "none"
-                   , style "padding" "0px"
-                   , style "background-color" "transparent"
-                   ]
-                   []
-               ]
-           , br [] []
-           , div [ style "margin-bottom" "10px" ]
-               [ case model.husbImg of
-                   Nothing ->
-                       div [ onClick ImgReqHusb, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
-
-                   Just content ->
-                       img [ src content, style "width" "90%", style "height" "50vw" ] []
-               ]
-           , label [ onClick ImgReqHusb, style "border" "solid 1px #000000", style "margin-top" "10px" ] [ text "画像を選択" ]
-           ]
-
-
-   wife : Model -> Html Msg
-   wife model =
-       div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-           [ div []
-               [ label [ style "font-size" "20px" ] [ text "嫁:" ]
-               , textarea
-                   [ Html.Attributes.value model.wife
-                   , onInput InputWife
-                   , style "font-size" "20px"
-                   , style "height" "1em"
-                   , style "resize" "none"
-                   , style "padding" "0px"
-                   , style "background-color" "transparent"
-                   ]
-                   []
-               ]
-           , br [] []
-           , div [ style "margin-bottom" "10px" ]
-               [ case model.wifeImg of
-                   Nothing ->
-                       div [ onClick ImgReqWife, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
-
-                   Just content ->
-                       img [ src content, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
-               ]
-           , label [ onClick ImgReqWife, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
-           ]
--}
 ---serch
 
 
