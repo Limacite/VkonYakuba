@@ -192,6 +192,8 @@ view model =
                 ]
             , div [ style "height" "10px" ] [ hr [] [] ]
             , viewPage model
+            , div [ style "height" "10px" ] [ hr [] [] ]
+            , footer [ style "text-align" "center" ] [ text "Auther : sees" ]
             ]
         , div [ style "width" "100%", style "height" "100vh", style "background-color" "black", style "opacity" "0.5", style "position" "absolute", onClick ToggleMenu, hidden model.menu ] []
         , div [ style "width" "30%", style "background-color" "#b0c4de", style "height" "100v", style "right" "0", style "top" "0", style "position" "absolute", hidden model.menu ]
