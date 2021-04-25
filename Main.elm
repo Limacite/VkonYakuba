@@ -50,12 +50,13 @@ type alias Model =
     , imgs : List (Maybe String)
     , meetApp : Int
     , appSelect : Int
+    , menu : Bool
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0, Cmd.none )
+    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0 False, Cmd.none )
 
 
 
@@ -72,13 +73,14 @@ type Msg
     | ImgSelWife File
     | ImgLoadWife String
     | AppSelect Int
+    | ToggleMenu
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SelectPage number ->
-            ( { model | page = number }, Cmd.none )
+            ( { model | page = number, menu = not model.menu }, Cmd.none )
 
         InputName int input ->
             if int == 0 then
@@ -140,6 +142,9 @@ update msg model =
         AppSelect int ->
             ( { model | meetApp = int }, Cmd.none )
 
+        ToggleMenu ->
+            ( { model | menu = not model.menu }, Cmd.none )
+
 
 
 --SUBSCRIPTIONS
@@ -180,18 +185,22 @@ view model =
             selectPage model.page
     in
     div [ style "display" "flex", style "background-image" "url(img/bg_img.jpg) ", style "height" "100v", style "padding-bottom" "50px" ]
-        [ div [ style "width" "20%", style "float" "left", hidden True ]
-            [ ul [ style "list-style-type" "none" ]
-                [ li [] [ label [ onClick (SelectPage 0) ] [ text "home" ] ]
-                , li [] [ label [ onClick (SelectPage 1) ] [ text "他の家族" ] ]
-                , li [] [ label [ onClick (SelectPage 2) ] [ text "家族を編集" ] ]
-                , li [] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
+        [ div [ style "width" "100%", style "margin" "0 auto" ]
+            [ div [ style "font-size" "50px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "10px" ]
+                [ text "🏠Virtual役場🏠"
+                , div [ onClick ToggleMenu, style "font-size" "15px", style "margin-bottom" "0px" ] [ text "[Menu]" ]
                 ]
-            ]
-        , div [ style "width" "100%", style "margin" "0 auto" ]
-            [ div [ style "font-size" "50px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "30px" ] [ text "🏠Virtual役場🏠" ]
             , div [ style "height" "10px" ] [ hr [] [] ]
             , viewPage model
+            ]
+        , div [ style "width" "100%", style "height" "100vh", style "background-color" "black", style "opacity" "0.5", style "position" "absolute", onClick ToggleMenu, hidden model.menu ] []
+        , div [ style "width" "30%", style "background-color" "#b0c4de", style "height" "100v", style "right" "0", style "top" "0", style "position" "absolute", hidden model.menu ]
+            [ ul [ style "list-style-type" "none", style "font-size" "15px" ]
+                [ li [ style "padding" "10px" ] [ label [ onClick (SelectPage 0) ] [ text "home" ] ]
+                , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 1) ] [ text "他の家族" ] ]
+                , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 2) ] [ text "家族を編集" ] ]
+                , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
+                ]
             ]
         ]
 
@@ -206,6 +215,8 @@ viewHome model =
         [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "-婚姻届-" ]
         , appSelect
         , br [] []
+        , label [ style "font-size" "20px", style "line-height" "50px" ] [ text "結婚する人" ]
+        , pre [] []
         , marryForm model
         ]
 
@@ -331,6 +342,7 @@ personSelect model int =
                         ]
                         []
             ]
+        , pre [] []
         , label [ onClick (ImgReq int), style "border" "solid 1px #000000", style "margin-top" "10px" ] [ text "画像を選択" ]
         ]
 
