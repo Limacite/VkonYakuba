@@ -30,9 +30,21 @@ main =
 -- MODEL
 
 
+type alias Human =
+    { name : String
+    , sex : String
+    , app : List String
+    , img : Maybe String
+    }
+
+
+initHuman =
+    { name = "名無しのVIP", sex = "", app = [], img = Nothing }
+
+
 type alias Model =
     { page : Int
-    , account : String
+    , account : Human
     , husband : String
     , wife : String
     , husbImg : Maybe String
@@ -44,7 +56,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 0 "Gest" "danna" "yome" Nothing Nothing 0 0, Cmd.none )
+    ( Model 0 initHuman "danna" "yome" Nothing Nothing 0 0, Cmd.none )
 
 
 
@@ -137,23 +149,26 @@ view model =
                 2 ->
                     viewFamily
 
+                3 ->
+                    setting
+
                 _ ->
                     viewHome
     in
-    div [ style "display" "flex" ]
-        [ div [ style "width" "25%", style "float" "left", style "border-style" "solid" ]
+    div [ style "display" "flex", style "background-image" "url(img/bg_img.jpg) ", style "height" "100v", style "padding-bottom" "50px" ]
+        [ div [ style "width" "20%", style "float" "left", hidden True ]
             [ ul [ style "list-style-type" "none" ]
                 [ li [] [ label [ onClick (SelectPage 0) ] [ text "home" ] ]
-                , li [] [ label [ onClick (SelectPage 1) ] [ text "他のカップル" ] ]
+                , li [] [ label [ onClick (SelectPage 1) ] [ text "他の家族" ] ]
                 , li [] [ label [ onClick (SelectPage 2) ] [ text "家族を編集" ] ]
+                , li [] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
                 ]
             ]
-        , div [ style "width" "50%", style "margin" "0 auto", style "border-style" "solid" ]
-            [ div [ style "font-size" "50px", style "width" "60%", style "margin" "0 auto" ] [ text "🏠Virtual役場🏠" ]
+        , div [ style "width" "100%", style "margin" "0 auto" ]
+            [ div [ style "font-size" "50px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "30px" ] [ text "🏠Virtual役場🏠" ]
+            , div [ style "height" "10px" ] [ hr [] [] ]
             , viewPage model
             ]
-        , div [ style "width" "25%", style "float" "right", style "border-style" "solid" ]
-            [ text model.account ]
         ]
 
 
@@ -163,7 +178,7 @@ view model =
 
 viewHome : Model -> Html Msg
 viewHome model =
-    div []
+    div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd", style "width" "172mm", style "height" "251mm", style "margin" "0 auto", style "padding" "40px" ]
         [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "婚姻届" ]
         , appSelect
         , br [] []
@@ -173,17 +188,19 @@ viewHome model =
 
 appSelect : Html Msg
 appSelect =
-    div []
-        [ text "出会った場所"
+    div [ style "margin-top" "25px", style "margin-bottom" "25px" ]
+        [ div [ style "font-size" "20px" ] [ text "出会った場所" ]
         , br [] []
-        , input [ type_ "radio", name "Reality", onClick (AppSelect 0) ] []
-        , text "Reality"
-        , input [ type_ "radio", name "Reality", onClick (AppSelect 1) ] []
-        , text "Mirative"
-        , input [ type_ "radio", name "Reality", onClick (AppSelect 2) ] []
-        , text "IRIUM"
-        , input [ type_ "radio", name "Reality", onClick (AppSelect 3) ] []
-        , text "Twitter"
+        , div [ style "margin-left" "20px" ]
+            [ input [ type_ "radio", onClick (AppSelect 0) ] []
+            , text "Reality"
+            , input [ type_ "radio", onClick (AppSelect 1) ] []
+            , text "Mirative"
+            , input [ type_ "radio", onClick (AppSelect 2) ] []
+            , text "IRIUM"
+            , input [ type_ "radio", onClick (AppSelect 3) ] []
+            , text "Twitter"
+            ]
         ]
 
 
@@ -206,8 +223,8 @@ marryForm model =
 husbund : Model -> Html Msg
 husbund model =
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-        [ div [ style "display" "flex" ]
-            [ label [ style "font-size" "20px" ] [ text "旦那:" ]
+        [ div []
+            [ label [ style "font-size" "20px" ] [ text "夫:" ]
             , textarea
                 [ Html.Attributes.value model.husband
                 , onInput InputHusb
@@ -215,17 +232,18 @@ husbund model =
                 , style "height" "1em"
                 , style "resize" "none"
                 , style "padding" "0px"
+                , style "background-color" "transparent"
                 ]
                 []
             ]
         , br [] []
-        , div [ hidden (model.husbImg == Nothing) ]
+        , div []
             [ case model.husbImg of
                 Nothing ->
-                    text ""
+                    div [ style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
 
                 Just content ->
-                    img [ src content, style "width" "90%" ] []
+                    img [ src content, style "width" "90%", style "height" "50vw" ] []
             ]
         , label [ onClick ImgReqHusb, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
         ]
@@ -234,7 +252,7 @@ husbund model =
 wife : Model -> Html Msg
 wife model =
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-        [ div [ style "display" "flex" ]
+        [ div []
             [ label [ style "font-size" "20px" ] [ text "嫁:" ]
             , textarea
                 [ Html.Attributes.value model.wife
@@ -243,17 +261,18 @@ wife model =
                 , style "height" "1em"
                 , style "resize" "none"
                 , style "padding" "0px"
+                , style "background-color" "transparent"
                 ]
                 []
             ]
         , br [] []
-        , div [ hidden (model.husbImg == Nothing) ]
+        , div []
             [ case model.wifeImg of
                 Nothing ->
-                    text ""
+                    div [ style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
 
                 Just content ->
-                    img [ src content, style "width" "90%" ] []
+                    img [ src content, style "width" "90%", style "height" "50vw", style "background-color" "gray" ] []
             ]
         , label [ onClick ImgReqWife, style "border" "solid 1px #000000" ] [ text "画像を選択" ]
         ]
@@ -310,3 +329,24 @@ viewFamily model =
            , div [ style "text-align" "right" ] [ text human.app ]
            ]
 -}
+--- setting
+
+
+setting : Model -> Html Msg
+setting model =
+    let
+        icon =
+            case model.account.img of
+                Just src ->
+                    src
+
+                Nothing ->
+                    "./img/defaultIcon.png"
+    in
+    div [ style "display" "flex", style "margin-top" "50px" ]
+        [ img
+            [ style "height" "150px", style "width" "150px", style "border-radius" "50%", style "border-position" "left top", src icon ]
+            []
+        , div [ style "margin-left" "50px" ]
+            [ label [] [ text ("名前：" ++ model.account.name) ] ]
+        ]
