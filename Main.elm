@@ -154,25 +154,30 @@ subscriptions model =
 -- VIEW
 
 
+selectPage : Int -> (Model -> Html Msg)
+selectPage int =
+    case int of
+        0 ->
+            viewHome
+
+        1 ->
+            viewOther
+
+        2 ->
+            viewFamily
+
+        3 ->
+            setting
+
+        _ ->
+            viewHome
+
+
 view : Model -> Html Msg
 view model =
     let
         viewPage =
-            case model.page of
-                0 ->
-                    viewHome
-
-                1 ->
-                    viewOther
-
-                2 ->
-                    viewFamily
-
-                3 ->
-                    setting
-
-                _ ->
-                    viewHome
+            selectPage model.page
     in
     div [ style "display" "flex", style "background-image" "url(img/bg_img.jpg) ", style "height" "100v", style "padding-bottom" "50px" ]
         [ div [ style "width" "20%", style "float" "left", hidden True ]
