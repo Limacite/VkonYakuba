@@ -56,7 +56,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0 False, Cmd.none )
+    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0 True, Cmd.none )
 
 
 
@@ -184,16 +184,15 @@ view model =
         viewPage =
             selectPage model.page
     in
-    div [ style "display" "flex", style "background-image" "url(img/bg_img.jpg) ", style "height" "100v", style "padding-bottom" "50px" ]
-        [ div [ style "width" "100%", style "margin" "0 auto" ]
+    div [ style "display" "flex", style "background-repeat" "repeat", style "height" "100v", style "padding-bottom" "50px", style "positino" "relavel" ]
+        [ div [ style "width" "100%", style "height" "100%", style "margin" "0 auto" ]
             [ div [ style "font-size" "50px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "10px" ]
-                [ text "🏠Virtual役場🏠"
-                , div [ onClick ToggleMenu, style "font-size" "15px", style "margin-bottom" "0px" ] [ text "[Menu]" ]
+                [ label [ onClick (SelectPage 0) ] [ text "🏠Virtual役場🏠" ]
+                , div [ onClick ToggleMenu, style "font-size" "15px", style "margin" "0px" ] [ text "[Menu]" ]
                 ]
             , div [ style "height" "10px" ] [ hr [] [] ]
             , viewPage model
             , div [ style "height" "10px" ] [ hr [] [] ]
-            , footer [ style "text-align" "center" ] [ text "Auther : sees" ]
             ]
         , div [ style "width" "100%", style "height" "100vh", style "background-color" "black", style "opacity" "0.5", style "position" "absolute", onClick ToggleMenu, hidden model.menu ] []
         , div [ style "width" "30%", style "background-color" "#b0c4de", style "height" "100v", style "right" "0", style "top" "0", style "position" "absolute", hidden model.menu ]
@@ -204,6 +203,7 @@ view model =
                 , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
                 ]
             ]
+        , footer [ style "text-align" "center", style "width" "100%", style "height" "100%", style "position" "absolute", style "bottom" "0" ] [ text "Auther : sees" ]
         ]
 
 
@@ -213,6 +213,18 @@ view model =
 
 viewHome : Model -> Html Msg
 viewHome model =
+    div [ style "margin-left" "100px" ]
+        [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "-婚姻届-" ]
+        , appSelect
+        , br [] []
+        , label [ style "font-size" "20px", style "line-height" "50px" ] [ text "結婚する人" ]
+        , pre [] []
+        , marryForm model
+        ]
+
+
+makeMarry : Model -> Html Msg
+makeMarry model =
     div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd", style "width" "172mm", style "height" "251mm", style "margin" "0 auto", style "padding" "60px", style "background-image" "url(img/bg_img_konin.png)", style "background-size" "100% 100%" ]
         [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "-婚姻届-" ]
         , appSelect
@@ -255,10 +267,10 @@ marryForm model =
             , personSelect model 1
             ]
         , br [] []
-        , div [ style "text-align" "center" ]
-            [ button
-                [ style "font-size" "15px", style "font-weight" "bold", style "height" "2em", style "width" "50%", disabled (String.length model.husband < 1 && String.length model.wife < 1) ]
-                [ text "宣誓" ]
+        , div [ style "margin-top" "30px" ]
+            [ label
+                [ style "font-size" "30px", style "font-weight" "bold", style "height" "2em", style "width" "50%", disabled (String.length model.husband < 1 && String.length model.wife < 1) ]
+                [ text ">>>>宣誓する" ]
             ]
         ]
 
@@ -274,9 +286,21 @@ howCall =
         , style "background-color" "transparent"
         , style "vertical-align" "middle"
         ]
-        [ option [ value "夫" ] [ text "夫" ]
-        , option [ value "嫁" ] [ text "嫁" ]
-        , option [ value "他人" ] [ text "他人" ]
+        [ option
+            [ value "夫"
+            , style "vertical-align" "middle"
+            ]
+            [ text "夫" ]
+        , option
+            [ value "嫁"
+            , style "vertical-align" "middle"
+            ]
+            [ text "嫁" ]
+        , option
+            [ value "他人"
+            , style "vertical-align" "middle"
+            ]
+            [ text "他人" ]
         ]
 
 
@@ -308,7 +332,7 @@ personSelect model int =
                         Nothing
     in
     div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
-        [ div []
+        [ div [ style "margin-bottom" "25px" ]
             [ howCall
             , textarea
                 [ Html.Attributes.value person
@@ -331,17 +355,11 @@ personSelect model int =
             ]
             [ case personImg of
                 Just content ->
-                    img [ src content, style "width" "90%", style "height" "50vw" ] []
+                    img [ src content, style "width" "90%", style "height" "70vw" ] []
 
                 _ ->
                     div
-                        [ onClick (ImgReq int)
-                        , style "width" "90%"
-                        , style "height" "50vw"
-                        , style "background-color" "gray"
-                        , style "padding" "0"
-                        , style "margin" "0"
-                        ]
+                        []
                         []
             ]
         , pre [] []
