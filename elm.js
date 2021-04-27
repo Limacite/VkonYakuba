@@ -5341,7 +5341,7 @@ var $author$project$Main$init = function (_v0) {
 				[$elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing]),
 			0,
 			0,
-			false),
+			true),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5677,7 +5677,6 @@ var $author$project$Main$appSelect = A2(
 			A2($elm$html$Html$div, _List_Nil, $author$project$Main$appList)
 		]));
 var $author$project$Main$Submit = {$: 'Submit'};
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
@@ -5730,7 +5729,8 @@ var $author$project$Main$howCall = A2(
 			$elm$html$Html$option,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$value('夫')
+					$elm$html$Html$Attributes$value('夫'),
+					A2($elm$html$Html$Attributes$style, 'vertical-align', 'middle')
 				]),
 			_List_fromArray(
 				[
@@ -5740,7 +5740,8 @@ var $author$project$Main$howCall = A2(
 			$elm$html$Html$option,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$value('嫁')
+					$elm$html$Html$Attributes$value('嫁'),
+					A2($elm$html$Html$Attributes$style, 'vertical-align', 'middle')
 				]),
 			_List_fromArray(
 				[
@@ -5750,7 +5751,8 @@ var $author$project$Main$howCall = A2(
 			$elm$html$Html$option,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$value('他人')
+					$elm$html$Html$Attributes$value('他人'),
+					A2($elm$html$Html$Attributes$style, 'vertical-align', 'middle')
 				]),
 			_List_fromArray(
 				[
@@ -5827,7 +5829,10 @@ var $author$project$Main$personSelect = F2(
 				[
 					A2(
 					$elm$html$Html$div,
-					_List_Nil,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'margin-bottom', '25px')
+						]),
 					_List_fromArray(
 						[
 							$author$project$Main$howCall,
@@ -5868,23 +5873,11 @@ var $author$project$Main$personSelect = F2(
 										[
 											$elm$html$Html$Attributes$src(content),
 											A2($elm$html$Html$Attributes$style, 'width', '90%'),
-											A2($elm$html$Html$Attributes$style, 'height', '50vw')
+											A2($elm$html$Html$Attributes$style, 'height', '70vw')
 										]),
 									_List_Nil);
 							} else {
-								return A2(
-									$elm$html$Html$div,
-									_List_fromArray(
-										[
-											$elm$html$Html$Events$onClick(
-											$author$project$Main$ImgReq(_int)),
-											A2($elm$html$Html$Attributes$style, 'width', '90%'),
-											A2($elm$html$Html$Attributes$style, 'height', '50vw'),
-											A2($elm$html$Html$Attributes$style, 'background-color', 'gray'),
-											A2($elm$html$Html$Attributes$style, 'padding', '0'),
-											A2($elm$html$Html$Attributes$style, 'margin', '0')
-										]),
-									_List_Nil);
+								return A2($elm$html$Html$div, _List_Nil, _List_Nil);
 							}
 						}()
 						])),
@@ -5931,15 +5924,15 @@ var $author$project$Main$marryForm = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+						A2($elm$html$Html$Attributes$style, 'margin-top', '30px')
 					]),
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$button,
+						$elm$html$Html$label,
 						_List_fromArray(
 							[
-								A2($elm$html$Html$Attributes$style, 'font-size', '15px'),
+								A2($elm$html$Html$Attributes$style, 'font-size', '30px'),
 								A2($elm$html$Html$Attributes$style, 'font-weight', 'bold'),
 								A2($elm$html$Html$Attributes$style, 'height', '2em'),
 								A2($elm$html$Html$Attributes$style, 'width', '50%'),
@@ -5948,7 +5941,7 @@ var $author$project$Main$marryForm = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('宣誓')
+								$elm$html$Html$text('>>>>宣誓する')
 							]))
 					]))
 			]));
@@ -5958,14 +5951,7 @@ var $author$project$Main$viewHome = function (model) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'border', 'double medium #ff69b4'),
-				A2($elm$html$Html$Attributes$style, 'background-color', '#ffccfd'),
-				A2($elm$html$Html$Attributes$style, 'width', '172mm'),
-				A2($elm$html$Html$Attributes$style, 'height', '251mm'),
-				A2($elm$html$Html$Attributes$style, 'margin', '0 auto'),
-				A2($elm$html$Html$Attributes$style, 'padding', '60px'),
-				A2($elm$html$Html$Attributes$style, 'background-image', 'url(img/bg_img_konin.png)'),
-				A2($elm$html$Html$Attributes$style, 'background-size', '100% 100%')
+				A2($elm$html$Html$Attributes$style, 'margin-left', '100px')
 			]),
 		_List_fromArray(
 			[
@@ -6033,9 +6019,10 @@ var $author$project$Main$view = function (model) {
 		_List_fromArray(
 			[
 				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-				A2($elm$html$Html$Attributes$style, 'background-image', 'url(img/bg_img.jpg) '),
+				A2($elm$html$Html$Attributes$style, 'background-repeat', 'repeat'),
 				A2($elm$html$Html$Attributes$style, 'height', '100v'),
-				A2($elm$html$Html$Attributes$style, 'padding-bottom', '50px')
+				A2($elm$html$Html$Attributes$style, 'padding-bottom', '50px'),
+				A2($elm$html$Html$Attributes$style, 'positino', 'relavel')
 			]),
 		_List_fromArray(
 			[
@@ -6044,6 +6031,7 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'width', '100%'),
+						A2($elm$html$Html$Attributes$style, 'height', '100%'),
 						A2($elm$html$Html$Attributes$style, 'margin', '0 auto')
 					]),
 				_List_fromArray(
@@ -6059,14 +6047,24 @@ var $author$project$Main$view = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('🏠Virtual役場🏠'),
+								A2(
+								$elm$html$Html$label,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$SelectPage(0))
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('🏠Virtual役場🏠')
+									])),
 								A2(
 								$elm$html$Html$div,
 								_List_fromArray(
 									[
 										$elm$html$Html$Events$onClick($author$project$Main$ToggleMenu),
 										A2($elm$html$Html$Attributes$style, 'font-size', '15px'),
-										A2($elm$html$Html$Attributes$style, 'margin-bottom', '0px')
+										A2($elm$html$Html$Attributes$style, 'margin', '0px')
 									]),
 								_List_fromArray(
 									[
@@ -6093,16 +6091,6 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								A2($elm$html$Html$hr, _List_Nil, _List_Nil)
-							])),
-						A2(
-						$elm$html$Html$footer,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'text-align', 'center')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Auther : sees')
 							]))
 					])),
 				A2(
@@ -6222,6 +6210,20 @@ var $author$project$Main$view = function (model) {
 											]))
 									]))
 							]))
+					])),
+				A2(
+				$elm$html$Html$footer,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'width', '100%'),
+						A2($elm$html$Html$Attributes$style, 'height', '100%'),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'bottom', '0')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Auther : sees')
 					]))
 			]));
 };
