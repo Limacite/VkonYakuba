@@ -85,7 +85,11 @@ update msg model =
             ( { model | page = number, menu = not model.menu }, Cmd.none )
 
         SelectForm num ->
-            ( { model | formNum = num }, Cmd.none )
+            if model.formNum /= num then
+                ( { model | formNum = num }, Cmd.none )
+
+            else
+                ( { model | formNum = 3 }, Cmd.none )
 
         InputName int input ->
             if int == 0 then
@@ -179,6 +183,9 @@ selectPage int =
         3 ->
             setting
 
+        4 ->
+            oathMarry
+
         _ ->
             viewHome
 
@@ -219,13 +226,18 @@ view model =
 
 viewHome : Model -> Html Msg
 viewHome model =
+    let
+        margin_elem =
+            style "margin-top" "5em"
+    in
     div []
-        [ h3 []
-            [ label [ onClick (SelectForm 0) ] [ text "▷婚姻届" ]
-            , div [ hidden (model.formNum /= 0) ] [ marryForm model ]
+        [ div [ style "text-align" "center", style "margin" "3em" ] [ text "このページではV婚の婚姻届や離婚届を提出できます。" ]
+        , h3 []
+            [ label [ onClick (SelectForm 0), margin_elem ] [ text "▷婚姻届" ]
+            , div [ hidden (model.formNum /= 0), margin_elem ] [ marryForm model ]
             , br [] []
-            , label [ onClick (SelectForm 1) ] [ text "▷離婚届" ]
-            , div [ hidden (model.formNum /= 1) ] [ marryForm model ]
+            , label [ onClick (SelectForm 1), margin_elem ] [ text "▷離婚届" ]
+            , div [ hidden (model.formNum /= 1), margin_elem ] [ marryForm model ]
             ]
         ]
 
@@ -275,7 +287,12 @@ appSelect =
 appList : List (Html Msg)
 appList =
     List.concat
-        (List.indexedMap viewAppList [ "IRIAM", "Mirative", "Reality", "Twitter" ])
+        (List.indexedMap viewAppList streamAppList)
+
+
+streamAppList : List String
+streamAppList =
+    [ "IRIAM", "Mirative", "Reality", "Twitter" ]
 
 
 viewAppList : Int -> String -> List (Html Msg)
@@ -287,23 +304,19 @@ viewAppList num app =
     ]
 
 
-
-{-
-   marryForm : Model -> Html Msg
-   marryForm model =
-       Html.form [ onSubmit Submit, style "display" "flex", style "flex-direction" "column" ]
-           [ div [ style "desplay" "flex" ]
-               [ personSelect model 0
-               , personSelect model 1
-               ]
-           , br [] []
-           , div [ style "margin-top" "30px" ]
-               [ label
-                   [ style "font-size" "30px", style "font-weight" "bold", style "height" "2em", style "width" "50%", disabled (String.length model.husband < 1 && String.length model.wife < 1) ]
-                   [ text ">>>>宣誓する" ]
-               ]
-           ]
--}
+oathMarry : Model -> Html Msg
+oathMarry model =
+    div [ style "border" "double medium #ff69b4", style "background-color" "#ffccfd", style "width" "172mm", style "height" "251mm", style "margin" "0 auto", style "padding" "60px", style "background-image" "url(img/bg_img_konin.png)", style "background-size" "100% 100%" ]
+        [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "-婚姻届-" ]
+        , div [] [ text "出会い：********" ]
+        , br [] []
+        , div [ style "display" "flex", style "flex-direction" "column" ]
+            [ div [ style "desplay" "flex" ]
+                [ marryedPerson model 0
+                , marryedPerson model 1
+                ]
+            ]
+        ]
 
 
 howCall : Html Msg
@@ -395,6 +408,66 @@ personSelect model int =
             ]
         , pre [] []
         , label [ onClick (ImgReq int), style "border" "solid 1px #000000", style "margin-top" "10px" ] [ text "画像を選択" ]
+        ]
+
+
+marryedPerson : Model -> Int -> Html Msg
+marryedPerson model int =
+    let
+        person =
+            if int == 0 then
+                model.husband
+
+            else
+                model.wife
+
+        personImg =
+            if int == 0 then
+                case List.head model.imgs of
+                    Just wife ->
+                        wife
+
+                    _ ->
+                        Nothing
+
+            else
+                case List.head (List.reverse model.imgs) of
+                    Just wife ->
+                        wife
+
+                    _ ->
+                        Nothing
+    in
+    div [ style "width" "50%", style "float" "left", style "text-align" "center" ]
+        [ div [ style "margin-bottom" "25px" ]
+            [ howCall
+            , label
+                [ onInput (InputName int)
+                , style "font-size" "20px"
+                , style "height" "1.2em"
+                , style "resize" "none"
+                , style "padding" "0px"
+                , style "margin" "0px"
+                , style "background-color" "transparent"
+                , style "vertical-align" "middle"
+                ]
+                [ text person ]
+            ]
+        , br [] []
+        , div
+            [ style "margin-bottom" "10px"
+            , style "padding" "0"
+            , style "margin" "0"
+            ]
+            [ case personImg of
+                Just content ->
+                    img [ src content, style "width" "90%", style "height" "70vw" ] []
+
+                _ ->
+                    div
+                        []
+                        []
+            ]
         ]
 
 
