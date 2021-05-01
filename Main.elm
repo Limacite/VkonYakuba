@@ -51,12 +51,13 @@ type alias Model =
     , meetApp : Int
     , appSelect : Int
     , menu : Bool
+    , formNum : Int
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0 True, Cmd.none )
+    ( Model 0 initHuman "danna" "yome" [ Nothing, Nothing ] 0 0 True 0, Cmd.none )
 
 
 
@@ -74,6 +75,7 @@ type Msg
     | ImgLoadWife String
     | AppSelect Int
     | ToggleMenu
+    | SelectForm Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,6 +83,9 @@ update msg model =
     case msg of
         SelectPage number ->
             ( { model | page = number, menu = not model.menu }, Cmd.none )
+
+        SelectForm num ->
+            ( { model | formNum = num }, Cmd.none )
 
         InputName int input ->
             if int == 0 then
@@ -186,8 +191,8 @@ view model =
     in
     div [ style "display" "flex", style "background-repeat" "repeat", style "height" "100v", style "padding-bottom" "50px", style "positino" "relavel" ]
         [ div [ style "width" "100%", style "height" "100%", style "margin" "0 auto" ]
-            [ div [ style "font-size" "50px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "10px" ]
-                [ label [ onClick (SelectPage 0) ] [ text "🏠Virtual役場🏠" ]
+            [ div [ style "font-size" "30px", style "text-align" "center", style "margin-top" "30px", style "margin-bottom" "10px" ]
+                [ h1 [ style "margin" "0px" ] [ label [ onClick (SelectPage 0) ] [ text "🏠Virtual役場🏠" ] ]
                 , div [ onClick ToggleMenu, style "font-size" "15px", style "margin" "0px" ] [ text "[Menu]" ]
                 ]
             , div [ style "height" "10px" ] [ hr [] [] ]
@@ -195,15 +200,16 @@ view model =
             , div [ style "height" "10px" ] [ hr [] [] ]
             ]
         , div [ style "width" "100%", style "height" "100vh", style "background-color" "black", style "opacity" "0.5", style "position" "absolute", onClick ToggleMenu, hidden model.menu ] []
-        , div [ style "width" "30%", style "background-color" "#b0c4de", style "height" "100v", style "right" "0", style "top" "0", style "position" "absolute", hidden model.menu ]
-            [ ul [ style "list-style-type" "none", style "font-size" "15px" ]
-                [ li [ style "padding" "10px" ] [ label [ onClick (SelectPage 0) ] [ text "home" ] ]
-                , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 1) ] [ text "他の家族" ] ]
-                , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 2) ] [ text "家族を編集" ] ]
-                , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
+        , h4 []
+            [ div [ style "width" "30%", style "background-color" "#b0c4de", style "height" "100v", style "right" "0", style "top" "0", style "position" "absolute", hidden model.menu ]
+                [ ul [ style "list-style-type" "none", style "font-size" "15px" ]
+                    [ li [ style "padding" "10px" ] [ label [ onClick (SelectPage 0) ] [ text "home" ] ]
+                    , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 1) ] [ text "他の家族" ] ]
+                    , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 2) ] [ text "家族を編集" ] ]
+                    , li [ style "padding" "10px" ] [ label [ onClick (SelectPage 3) ] [ text "アカウント設定" ] ]
+                    ]
                 ]
             ]
-        , footer [ style "text-align" "center", style "width" "100%", style "height" "100%", style "position" "absolute", style "bottom" "0" ] [ text "Auther : sees" ]
         ]
 
 
@@ -213,13 +219,36 @@ view model =
 
 viewHome : Model -> Html Msg
 viewHome model =
-    div [ style "margin-left" "100px" ]
-        [ div [ style "font-size" "50px", style "color" "#ff00ff" ] [ text "-婚姻届-" ]
-        , appSelect
+    div []
+        [ h3 []
+            [ label [ onClick (SelectForm 0) ] [ text "▷婚姻届" ]
+            , div [ hidden (model.formNum /= 0) ] [ marryForm model ]
+            , br [] []
+            , label [ onClick (SelectForm 1) ] [ text "▷離婚届" ]
+            , div [ hidden (model.formNum /= 1) ] [ marryForm model ]
+            ]
+        ]
+
+
+marryForm : Model -> Html Msg
+marryForm model =
+    div []
+        [ appSelect
         , br [] []
         , label [ style "font-size" "20px", style "line-height" "50px" ] [ text "結婚する人" ]
         , pre [] []
-        , marryForm model
+        , Html.form [ onSubmit Submit, style "display" "flex", style "flex-direction" "column" ]
+            [ div [ style "desplay" "flex" ]
+                [ personSelect model 0
+                , personSelect model 1
+                ]
+            , br [] []
+            , div [ style "margin-top" "30px" ]
+                [ label
+                    [ style "font-size" "30px", style "font-weight" "bold", style "height" "2em", style "width" "50%", style "color" "blue", disabled (String.length model.husband < 1 && String.length model.wife < 1) ]
+                    [ text ">>>>宣誓する" ]
+                ]
+            ]
         ]
 
 
@@ -231,7 +260,6 @@ makeMarry model =
         , br [] []
         , label [ style "font-size" "20px", style "line-height" "50px" ] [ text "結婚する人" ]
         , pre [] []
-        , marryForm model
         ]
 
 
@@ -259,20 +287,23 @@ viewAppList num app =
     ]
 
 
-marryForm : Model -> Html Msg
-marryForm model =
-    Html.form [ onSubmit Submit, style "display" "flex", style "flex-direction" "column" ]
-        [ div [ style "desplay" "flex" ]
-            [ personSelect model 0
-            , personSelect model 1
-            ]
-        , br [] []
-        , div [ style "margin-top" "30px" ]
-            [ label
-                [ style "font-size" "30px", style "font-weight" "bold", style "height" "2em", style "width" "50%", disabled (String.length model.husband < 1 && String.length model.wife < 1) ]
-                [ text ">>>>宣誓する" ]
-            ]
-        ]
+
+{-
+   marryForm : Model -> Html Msg
+   marryForm model =
+       Html.form [ onSubmit Submit, style "display" "flex", style "flex-direction" "column" ]
+           [ div [ style "desplay" "flex" ]
+               [ personSelect model 0
+               , personSelect model 1
+               ]
+           , br [] []
+           , div [ style "margin-top" "30px" ]
+               [ label
+                   [ style "font-size" "30px", style "font-weight" "bold", style "height" "2em", style "width" "50%", disabled (String.length model.husband < 1 && String.length model.wife < 1) ]
+                   [ text ">>>>宣誓する" ]
+               ]
+           ]
+-}
 
 
 howCall : Html Msg
